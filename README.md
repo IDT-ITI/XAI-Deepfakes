@@ -1,6 +1,6 @@
 # Towards Quantitative Evaluation of Explainable AI Methods for Deepfake Detection
 
-## PyTorch Implementation of CA-SUM [[Paper]()] [[DOI]()] [[Cite]()]
+## [[Paper]()] [[DOI]()] [[Cite]()]
 <div align="justify">
 
 - From **"Towards Quantitative Evaluation of Explainable AI Methods for Deepfake Detection"**.
