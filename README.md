@@ -15,7 +15,7 @@ Developed, checked and verified on an `Ubuntu 20.04.6` PC with an `NVIDIA RTX 40
 ## Data
 <div align="justify">
 
-The database containing the frames of the original and the deepfake videos is available after asking for permission through the link: . The database needs to be placed into the /data folder for the code to work
+The database containing the frames of the original and the deepfake videos is available after asking for permission through the link: . The database needs to be placed into the [data](/data) folder for the code to work
 
 Faceforensics++ GitHub: 
 
