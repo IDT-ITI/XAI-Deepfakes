@@ -205,8 +205,7 @@ def computeExplanationMetrics(model,ds,ds_vis,i_trans,evaluation_explanation_met
         start_index = 2*len(scores)
 
     #For the first 600 pairs of real and deepfake images of the dataset
-    #for idx in range(start_index,1200,2):
-    for idx in range(start_index,4,2):
+    for idx in range(start_index,1200,2):
 
         #Print the index, get the inference and visualization frames and the ground truth label
         print((idx+2)//2)

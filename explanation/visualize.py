@@ -19,7 +19,7 @@ from decimal import Decimal
 #"GradCAM++" - "RISE" - "SHAP" - "LIME" - "SOBOL"
 explanation_method="LIME"
 #"random" or int of the index of the example
-dataset_example_index=13837#"random"
+dataset_example_index="random"
 
 
 
