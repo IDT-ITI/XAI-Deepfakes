@@ -16,12 +16,16 @@ from evaluation.generate_ff_test_data import getMatchedFFPath
 
 
 
-#Set the names of the files that save the results of each example and the final produced csv file
-save_name="comparison_results"
-csv_save_name="ff_comparison_scores"
+#"GradCAM++" - "RISE" - "SHAP" - "LIME" - "SOBOL" - "All"
+evaluation_explanation_methods="All"
 
 
 
+
+valid_methods=["GradCAM++", "RISE", "SHAP", "LIME", "SOBOL", "All"]
+if(evaluation_explanation_methods not in valid_methods):
+    print("Invalid explanation method(s) to evaluate")
+    sys.exit(0)
 
 #Load the model
 rs_size = 224
@@ -67,32 +71,13 @@ if not os.path.exists('./results'):
     os.makedirs('./results')
 
 #Call the corresponding function to compute them
-computeExplanationMetrics(model, ds, ds_visualize, inference_transforms, save_name)
+computeExplanationMetrics(model, ds, ds_visualize, inference_transforms, evaluation_explanation_methods)
 
-#Open the matched pairs csv and load the saved results
-file = open(ds_path, "r")
-data = list(csv.reader(file, delimiter=","))
-file.close()
-data=[x[0].split('/')[1] for x in data[1::2]]
 
-scores_all = np.load("./results/"+save_name+".npy")
-scores_all = list(scores_all)
-
-category=["Deepfakes","Face2Face","FaceSwap","NeuralTextures"]
-
-#Create a nan array with the saved results placed in different indexes based on the category of each example
-#This ensures that the mean scores will happen between examples of the same category
-scores=[]
-for i,s in enumerate(scores_all):
-    idx=category.index(data[i])
-
-    original=8*[np.nan]+idx*[np.nan]+[s[0][2]]+(7-idx)*[np.nan]
-    grad=idx*[np.nan]+[s[1][0]]+(3-idx)*[np.nan]+idx*[np.nan]+[s[1][1]]+(3-idx)*[np.nan]+idx*[np.nan]+[s[1][2]]+(3-idx)*[np.nan]+idx*[np.nan]+[s[1][3]]+(3-idx)*[np.nan]
-    rise=idx*[np.nan]+[s[2][0]]+(3-idx)*[np.nan]+idx*[np.nan]+[s[2][1]]+(3-idx)*[np.nan]+idx*[np.nan]+[s[2][2]]+(3-idx)*[np.nan]+idx*[np.nan]+[s[2][3]]+(3-idx)*[np.nan]
-    shap=idx*[np.nan]+[s[3][0]]+(3-idx)*[np.nan]+idx*[np.nan]+[s[3][1]]+(3-idx)*[np.nan]+idx*[np.nan]+[s[3][2]]+(3-idx)*[np.nan]+idx*[np.nan]+[s[3][3]]+(3-idx)*[np.nan]
-    lime=idx*[np.nan]+[s[4][0]]+(3-idx)*[np.nan]+idx*[np.nan]+[s[4][1]]+(3-idx)*[np.nan]+idx*[np.nan]+[s[4][2]]+(3-idx)*[np.nan]+idx*[np.nan]+[s[4][3]]+(3-idx)*[np.nan]
-    sobol=idx*[np.nan]+[s[5][0]]+(3-idx)*[np.nan]+idx*[np.nan]+[s[5][1]]+(3-idx)*[np.nan]+idx*[np.nan]+[s[5][2]]+(3-idx)*[np.nan]+idx*[np.nan]+[s[5][3]]+(3-idx)*[np.nan]
-    scores.append(np.array((original,grad,rise,shap,lime,sobol)))
+#Load the saved results
+save_name="comparison_results_"+evaluation_explanation_methods
+scores = np.load("./results/"+save_name+".npy")
+scores = list(scores)
 
 #Compute the mean values
 with warnings.catch_warnings():
@@ -100,11 +85,16 @@ with warnings.catch_warnings():
     scores=np.nanmean(scores,axis=0)
 
 #Create a dataframe and save the results in a csv
-index_values = ["Original","GradCAM", "RISE", "SHAP", "LIME", "SOBOL"]
+if(evaluation_explanation_methods=="All"):
+    index_values = ["Original", "GradCAM++", "RISE", "SHAP", "LIME", "SOBOL"]
+else:
+    index_values = ["Original", evaluation_explanation_methods]
+
 column_values = ["Sufficiency Top 3 DF","Sufficiency Top 3 F2F","Sufficiency Top 3 FS","Sufficiency Top 3 NT",
                  "Sufficiency Top 3 Original DF","Sufficiency Top 3 Original F2F","Sufficiency Top 3 Original FS","Sufficiency Top 3 Original NT",
                  "Accuracy (Top 3) DF","Accuracy (Top 3) F2F","Accuracy (Top 3) FS","Accuracy (Top 3) NT",
                  "Accuracy Top 3 Original DF","Accuracy Top 3 Original F2F","Accuracy Top 3 Original FS","Accuracy Top 3 Original NT"]
 df = pd.DataFrame(data=scores,index=index_values,columns=column_values)
+csv_save_name="comparison_scores_"+evaluation_explanation_methods
 df.round(3).to_csv("./results/"+csv_save_name+".csv",sep=',')
 print(df.round(3).to_string())

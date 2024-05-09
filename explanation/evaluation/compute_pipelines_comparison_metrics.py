@@ -1,4 +1,6 @@
 import os
+import sys
+
 import torch
 from methods.gradcam_xai import explain as GradCAM
 from methods.rise_xai import explain as RISE
@@ -188,10 +190,14 @@ def computeSOBOLMetrics(model, i_img, v_img, i_r_img, v_r_img, best_label, true_
     #Return the scores
     return [disc_plus, disc_plus_original, adv_acc, adv_acc_original]
 
-def computeExplanationMetrics(model,ds,ds_vis,i_trans,name):
-    scores=[]
-    start_index = 0
+def computeExplanationMetrics(model,ds,ds_vis,i_trans,evaluation_explanation_methods):
 
+    name="comparison_results_"+evaluation_explanation_methods
+    scores=[]
+    #Different deepfake categories
+    category=["Deepfakes","Face2Face","FaceSwap","NeuralTextures"]
+
+    start_index = 0
     #Load the saved results from the file and set the correct index
     if(os.path.isfile("./results/" + name + ".npy")):
         scores = np.load("./results/" + name + ".npy")
@@ -199,7 +205,8 @@ def computeExplanationMetrics(model,ds,ds_vis,i_trans,name):
         start_index = 2*len(scores)
 
     #For the first 600 pairs of real and deepfake images of the dataset
-    for idx in range(start_index,1200,2):
+    #for idx in range(start_index,1200,2):
+    for idx in range(start_index,4,2):
 
         #Print the index, get the inference and visualization frames and the ground truth label
         print((idx+2)//2)
@@ -209,25 +216,86 @@ def computeExplanationMetrics(model,ds,ds_vis,i_trans,name):
         real_frame, _ = ds[idx+1]
         visualize_real_frame, _ = ds_vis[idx+1]
 
+        #Set the index where the scores will be appended based on the category of the image
+        pos=category.index(ds.df.loc[idx][0].split('/')[1])
+
         #Compute the predicted label
         labels = model(frame.unsqueeze(0).to(model.device)).cpu().detach().numpy()
         best_label = np.argmax(labels)
 
         #Compute the classifier's accuracy for the original image
         acc = 1 if (best_label == true_label) else 0
-        scores_original = 2 * [np.nan] + [acc] + [np.nan]
 
-        #Call the different explanation methods and collect their evaluation scores
-        scores_grad = computeGradCAMMetrics(model, frame, visualize_frame, real_frame, visualize_real_frame, best_label, true_label)
-        scores_rise = computeRISEMetrics(model, frame, visualize_frame, real_frame, visualize_real_frame, best_label, true_label)
-        scores_shap = computeSHAPMetrics(model, frame, visualize_frame, real_frame, visualize_real_frame, best_label, true_label)
-        scores_lime = computeLIMEMetrics(model, frame, visualize_frame, _, visualize_real_frame, i_trans, best_label, true_label)
-        scores_sobol = computeSOBOLMetrics(model, frame, visualize_frame, real_frame, visualize_real_frame, best_label, true_label)
+        if(evaluation_explanation_methods=="All"):
+            #Call the different explanation methods and collect their evaluation scores
+            scores_grad = computeGradCAMMetrics(model, frame, visualize_frame, real_frame, visualize_real_frame, best_label, true_label)
+            scores_rise = computeRISEMetrics(model, frame, visualize_frame, real_frame, visualize_real_frame, best_label, true_label)
+            scores_shap = computeSHAPMetrics(model, frame, visualize_frame, real_frame, visualize_real_frame, best_label, true_label)
+            scores_lime = computeLIMEMetrics(model, frame, visualize_frame, _, visualize_real_frame, i_trans, best_label, true_label)
+            scores_sobol = computeSOBOLMetrics(model, frame, visualize_frame, real_frame, visualize_real_frame, best_label, true_label)
+
+            # Shift the scores based on the pos index, so the mean of the scores are computed for examples of the same category
+            scores_original = 8*[np.nan]+pos*[np.nan]+[acc]+(7-pos)*[np.nan]
+            scores_grad = pos*[np.nan]+[scores_grad[0]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_grad[1]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_grad[2]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_grad[3]]+(3-pos)*[np.nan]
+            scores_rise = pos*[np.nan]+[scores_rise[0]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_rise[1]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_rise[2]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_rise[3]]+(3-pos)*[np.nan]
+            scores_shap = pos*[np.nan]+[scores_shap[0]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_shap[1]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_shap[2]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_shap[3]]+(3-pos)*[np.nan]
+            scores_lime = pos*[np.nan]+[scores_lime[0]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_lime[1]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_lime[2]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_lime[3]]+(3-pos)*[np.nan]
+            scores_sobol = pos*[np.nan]+[scores_sobol[0]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_sobol[1]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_sobol[2]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_sobol[3]]+(3-pos)*[np.nan]
+
+            # Accumulate the scores
+            scores_img = np.array((scores_original, scores_grad, scores_rise, scores_shap, scores_lime, scores_sobol))
+            scores.append(scores_img)
+
+        elif(evaluation_explanation_methods=="GradCAM++"):
+            scores_grad = computeGradCAMMetrics(model, frame, visualize_frame, real_frame, visualize_real_frame, best_label, true_label)
+
+            scores_original = 8*[np.nan]+pos*[np.nan]+[acc]+(7-pos)*[np.nan]
+            scores_grad = pos*[np.nan]+[scores_grad[0]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_grad[1]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_grad[2]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_grad[3]]+(3-pos)*[np.nan]
+
+            scores_img = np.array((scores_original, scores_grad))
+            scores.append(scores_img)
+
+        elif (evaluation_explanation_methods == "RISE"):
+            scores_rise = computeRISEMetrics(model, frame, visualize_frame, real_frame, visualize_real_frame, best_label, true_label)
+
+            scores_original = 8*[np.nan]+pos*[np.nan]+[acc]+(7-pos)*[np.nan]
+            scores_rise = pos*[np.nan]+[scores_rise[0]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_rise[1]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_rise[2]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_rise[3]]+(3-pos)*[np.nan]
+
+            scores_img = np.array((scores_original, scores_rise))
+            scores.append(scores_img)
+
+        elif (evaluation_explanation_methods == "SHAP"):
+            scores_shap = computeSHAPMetrics(model, frame, visualize_frame, real_frame, visualize_real_frame, best_label, true_label)
+
+            scores_original = 8*[np.nan]+pos*[np.nan]+[acc]+(7-pos)*[np.nan]
+            scores_shap = pos*[np.nan]+[scores_shap[0]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_shap[1]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_shap[2]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_shap[3]]+(3-pos)*[np.nan]
+
+            scores_img = np.array((scores_original, scores_shap))
+            scores.append(scores_img)
+
+        elif (evaluation_explanation_methods == "LIME"):
+            scores_lime = computeLIMEMetrics(model, frame, visualize_frame, _, visualize_real_frame, i_trans, best_label, true_label)
+
+            scores_original = 8*[np.nan]+pos*[np.nan]+[acc]+(7-pos)*[np.nan]
+            scores_lime = pos*[np.nan]+[scores_lime[0]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_lime[1]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_lime[2]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_lime[3]]+(3-pos)*[np.nan]
+
+            scores_img = np.array((scores_original, scores_lime))
+            scores.append(scores_img)
+
+        elif (evaluation_explanation_methods == "SOBOL"):
+            scores_sobol = computeSOBOLMetrics(model, frame, visualize_frame, real_frame, visualize_real_frame, best_label, true_label)
+
+            scores_original = 8*[np.nan]+pos*[np.nan]+[acc]+(7-pos)*[np.nan]
+            scores_sobol = pos*[np.nan]+[scores_sobol[0]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_sobol[1]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_sobol[2]]+(3-pos)*[np.nan]+pos*[np.nan]+[scores_sobol[3]]+(3-pos)*[np.nan]
+
+            scores_img = np.array((scores_original, scores_sobol))
+            scores.append(scores_img)
+
+        else:
+            print("Invalid explanation method(s) to evaluate")
+            sys.exit(0)
 
         torch.cuda.empty_cache()
-        #Accumulate the scores
-        scores_img = np.array((scores_original, scores_grad, scores_rise, scores_shap, scores_lime, scores_sobol))
-        scores.append(scores_img)
         #Save them on a file to avoid having to restart the whole procedure in case of the program crashing or something else going wrong
         np.save("./results/" + name + ".npy", scores)
 

@@ -15,11 +15,16 @@ from evaluation.generate_ff_test_data import getFFPath
 
 
 
-#Set the names of the files that save the results of each example and the final produced csv file
-save_name="results"
-csv_save_name="ff_scores"
+#"GradCAM++" - "RISE" - "SHAP" - "LIME" - "SOBOL" - "All"
+evaluation_explanation_methods="All"
 
 
+
+
+valid_methods=["GradCAM++", "RISE", "SHAP", "LIME", "SOBOL", "All"]
+if(evaluation_explanation_methods not in valid_methods):
+    print("Invalid explanation method(s) to evaluate")
+    sys.exit(0)
 
 #Load the model
 rs_size = 224
@@ -65,9 +70,11 @@ if not os.path.exists('./results'):
     os.makedirs('./results')
 
 #Call the corresponding function to compute them
-computeExplanationMetrics(model, ds, ds_visualize, inference_transforms, save_name)
+computeExplanationMetrics(model, ds, ds_visualize, inference_transforms, evaluation_explanation_methods)
+
 
 #Load the saved results
+save_name="results_"+evaluation_explanation_methods
 scores = np.load("./results/"+save_name+".npy")
 scores = list(scores)
 
@@ -77,7 +84,11 @@ with warnings.catch_warnings():
     scores=np.nanmean(scores,axis=0)
 
 #Create a dataframe and save the results in a csv
-index_values = ["Original","GradCAM", "RISE", "SHAP", "LIME", "SOBOL"]
+if(evaluation_explanation_methods=="All"):
+    index_values = ["Original", "GradCAM++", "RISE", "SHAP", "LIME", "SOBOL"]
+else:
+    index_values = ["Original", evaluation_explanation_methods]
+
 column_values = ["Sufficiency DF Top 1","Sufficiency DF Top 2","Sufficiency DF Top 3", "Stability DF",
                  "Sufficiency F2F Top 1","Sufficiency F2F Top 2","Sufficiency F2F Top 3", "Stability F2F",
                  "Sufficiency FS Top 1","Sufficiency FS Top 2","Sufficiency FS Top 3", "Stability FS",
@@ -87,6 +98,8 @@ column_values = ["Sufficiency DF Top 1","Sufficiency DF Top 2","Sufficiency DF T
                  "Accuracy F2F (Top 1)","Accuracy F2F Top 2", "Accuracy F2F Top 3",
                  "Accuracy FS (Top 1)","Accuracy FS Top 2", "Accuracy FS Top 3",
                  "Accuracy NT (Top 1)","Accuracy NT Top 2", "Accuracy NT Top 3"]
+
 df = pd.DataFrame(data=scores,index=index_values,columns=column_values)
+csv_save_name="scores_"+evaluation_explanation_methods
 df.round(3).to_csv("./results/"+csv_save_name+".csv",sep=',')
 print(df.round(3).to_string())

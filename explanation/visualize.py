@@ -18,14 +18,8 @@ from decimal import Decimal
 
 #"GradCAM++" - "RISE" - "SHAP" - "LIME" - "SOBOL"
 explanation_method="LIME"
-#Select to explain the predicted label (overrides explain_real and select_explanation_label)
-explain_predicted=True
-#Select to explain the real label (overrides select_explanation_label)
-explain_real=False
-#Manually select label
-select_explanation_label=-1
 #"random" or int of the index of the example
-dataset_example_index="random"
+dataset_example_index=13837#"random"
 
 
 
@@ -96,16 +90,9 @@ for o in output:
 print("\nPredicted label: "+ str(np.argmax(output)))
 print("Real label: "+ str(real_label))
 
-#Print the label selected for explanation
-if(explain_predicted):
-    explanation_label_index = np.argmax(output)
-    print("\nExplaining predicted label")
-elif(explain_real):
-    explanation_label_index = real_label
-    print("\nExplaining real label")
-else:
-    explanation_label_index=select_explanation_label
-    print("\nExplaining label "+str(select_explanation_label))
+#Set the predicted label for explanation
+explanation_label_index = np.argmax(output)
+print("\nExplaining predicted label")
 
 #Call the corresponding explanation method to calculate the explanation
 if(explanation_method == "GradCAM++"):
