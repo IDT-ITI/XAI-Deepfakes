@@ -28,7 +28,7 @@ To prevent misuse, the data are **not** publicly available. You can request for 
 Arguments: 
 |Parameter name | File | Description | Default Value | Options
 | :--- | :--- | :--- | :---: | :---:
-`explanation_method`|[`visualize.py`](explanation/visualize.py#L19:L20)| Explanation method used to explain the image. | 'LIME' | 'GradCAM++', 'RISE', 'SHAP', 'LIME', 'SOBOL'
+`explanation_method`|[`visualize.py`](explanation/visualize.py#L19:L20)| Explanation method to explain the image. | 'LIME' | 'GradCAM++', 'RISE', 'SHAP', 'LIME', 'SOBOL'
 `dataset_example_index`|[`visualize.py`](explanation/visualize.py#L21:L22)| Index of the image in the database | "random" | "random", integer between [0,13837]
 `evaluation_explanation_methods`|[`evaluate.py`](explanation/evaluate.py#L18:L19)| Explanation method to evaluate | 'All' | 'All', 'GradCAM++', 'RISE', 'SHAP', 'LIME', 'SOBOL'
 `evaluation_explanation_methods`|[`evaluate_pipelines_comparison.py`](explanation/evaluate.py#L19:L20)| Explanation method to evaluate | 'All' | 'All', 'GradCAM++', 'RISE', 'SHAP', 'LIME', 'SOBOL'
