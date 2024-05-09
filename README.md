@@ -1,33 +1,40 @@
 # Towards Quantitative Evaluation of Explainable AI Methods for Deepfake Detection
 
-## [[Paper]()] [[DOI]()] [[Cite]()]
+## [[Paper](https://updatelink)] [[DOI](https://updatelink)] [[Cite](https://updatelink)]
 <div align="justify">
 
 - From **"Towards Quantitative Evaluation of Explainable AI Methods for Deepfake Detection"**.
-- Written by ... .
-<!--
-- This software can be used for training a deep learning architecture which estimates frames' importance by integrating a concentrated attention mechanism and utilizing information about the frames' uniqueness and diversity. The integrated mechanism is able to focus on non-overlapping blocks in the main diagonal of the attention matrix and make better estimates about the significance of different parts of the video by considering the uniqueness and diversity of the associated frames. Training is performed in an unsupervised manner without knowledge of any ground-truth data. Finally, after being trained on a collection of videos, the CA-SUM model is capable of producing summaries for unseen videos, according to a user-specified time-budget about the summary duration. --> 
+- Written by Konstantinos Tsigos, Evlampios Apostolidis and Vasileios Mezaris.
+- This software can be used to visualize and evaluate different explanations of popular explanation methods from the literature, onto a state-of-the-art deepfake detector that relies on the second version of the Efficient-Net architecture. In this study, a slightly alterted version of an already existing pipeline is proposed, to evaluate the employed explanation methods (GradCAM++, RISE, SHAP, LIME, SOBOL), through the effectivenss of an adversarial attack to succesfully change the label of a deepfake image from fake to real, by adding noise to its segments that where returned as explanation.
 </div>
 
 ## Dependencies
-Developed, checked and verified on an `Ubuntu 20.04.6` PC with an `NVIDIA RTX 4090` GPU and an `i5-12600K` CPU. Required packages can be found inside the environment.yml file and can be installed through the Conda package and environment management system.
+Developed, checked and verified on an `Ubuntu 20.04.6` PC with an `NVIDIA RTX 4090` GPU and an `i5-12600K` CPU.
+
+Dependencies can be found inside the [environment.yml](/environment.yml) file, which can be used to set up a corresponding [conda](https://docs.conda.io/en/latest/) enviroment.
 
 ## Data
 <div align="justify">
 
-The database containing the frames of the original and the deepfake videos is available after asking for permission through the link: . The database needs to be placed into the [data](/data) folder for the code to work
+The data for visualizing and evaluating the different explanation methods, consist of the manipulated and non-manipulated sampled frames of the test videos found in the test split of the [FaceForensics++](https://github.com/ondyari/FaceForensics) dataset.
 
-Faceforensics++ GitHub: 
+To prevent misuse, the data are **not** publicly available. You can request for permission to access the database containing the sampled and cropped test frames through the link: https://updatelink . The database needs to be placed into the [data](/data) folder for the code to work.
 
 </div>
 
-## Configurations
+## Configurations and results
 <div align="justify">
    
 Arguments: 
 |Parameter name | File | Description | Default Value | Options
 | :--- | :--- | :--- | :---: | :---:
-`explanation_method`|[`visualize.py`](explanation/visualize.py#L19:L21)| Explanation Method used to explain the image. | 'LIME' | 'GradCAM++', 'RISE', 'SHAP', 'LIME', 'SOBOL'
+`explanation_method`|[`visualize.py`](explanation/visualize.py#L19:L20)| Explanation method used to explain the image. | 'LIME' | 'GradCAM++', 'RISE', 'SHAP', 'LIME', 'SOBOL'
+`dataset_example_index`|[`visualize.py`](explanation/visualize.py#L21:L22)| Index of the image in the database | "random" | "random", integer between [0,13837]
+`evaluation_explanation_methods`|[`evaluate.py`](explanation/evaluate.py#L18:L19)| Explanation method to evaluate | 'All' | 'All', 'GradCAM++', 'RISE', 'SHAP', 'LIME', 'SOBOL'
+`evaluation_explanation_methods`|[`evaluate_pipelines_comparison.py`](explanation/evaluate.py#L19:L20)| Explanation method to evaluate | 'All' | 'All', 'GradCAM++', 'RISE', 'SHAP', 'LIME', 'SOBOL'
+
+
+Evaluation results are printed onto the console and additionally saved into a csv format file, located at the results folder created at the [explanation](/explanation) path. In order to prevent the need to run the evaluation process from the beginning in case of a crash, the evaluation results of each subsequent image are contained into an npy format file used as a checkpoint, also located at the results folder.
 
 <!--
 ## Training
@@ -78,9 +85,10 @@ For further details about the adopted structure of directories in our implementa
 <div align="justify">
 
 We have released the [**`trained model`**]() used in our evaluation procedure.
-The model needs to be placed inside the [`model/checkpoint`](model/checkpoint)  path for the code to work
+The model needs to be placed inside the [`checkpoint`](model/checkpoint) folder for the code to work.
 </div>
 
+<!--
 ## Citation
 <div align="justify">
     
@@ -119,6 +127,6 @@ Copyright (c) 2022, Evlampios Apostolidis, Georgios Balaouras, Vasileios Mezaris
 
 This software is provided by the authors "as is" and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall the authors be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.
 </div>
-
+-->
 ## Acknowledgement
 <div align="justify"> This work was supported by the EU Horizon 2020 programme under grant agreements H2020-832921 MIRROR and H2020-951911 AI4Media. </div>
