@@ -88,45 +88,39 @@ We have released the [**`trained model`**]() used in our evaluation procedure.
 The model needs to be placed inside the [`checkpoint`](model/checkpoint) folder for the code to work.
 </div>
 
-<!--
 ## Citation
 <div align="justify">
     
 If you find our work, code or pretrained models, useful in your work, please cite the following publication:
 
-E. Apostolidis, G. Balaouras, V. Mezaris, I. Patras, "<b>Summarizing Videos using Concentrated Attention and Considering the Uniqueness and Diversity of the Video Frames</b>", Proc. of the 2022 Int. Conf. on Multimedia Retrieval (ICMR ’22), June 2022, Newark, NJ, USA.
+K. Tsigos, E. Apostolidis, S. Baxevanakis, S. Papadopoulos, V. Mezaris, "<b>Towards Quantitative Evaluation of Explainable AI Methods for Deepfake Detection</b>", Proc. ACM Int. Workshop on Multimedia AI against Disinformation (MAD’24) at the ACM Int. Conf. on Multimedia Retrieval (ICMR’24), Thailand, June 2024.
 </div>
 
 BibTeX:
 
 ```
-@inproceedings{10.1145/3512527.3531404,
-author = {Apostolidis, Evlampios and Balaouras, Georgios and Mezaris, Vasileios and Patras, Ioannis},
-title = {Summarizing Videos Using Concentrated Attention and Considering the Uniqueness and Diversity of the Video Frames},
-year = {2022},
-isbn = {9781450392389},
-publisher = {Association for Computing Machinery},
-address = {New York, NY, USA},
-url = {https://doi.org/10.1145/3512527.3531404},
-doi = {10.1145/3512527.3531404},
-pages = {407-415},
-numpages = {9},
-keywords = {frame diversity, frame uniqueness, concentrated attention, unsupervised learning, video summarization},
-location = {Newark, NJ, USA},
-series = {ICMR '22}
+@INPROCEEDINGS{Tsigos2024,
+    author    = {Tsigos, Konstantinos, and Apostolidis, Evlampios and Baxevanakis, Spyridon and Papadopoulos, Symeon and Mezaris, Vasileios},
+    title     = {Towards Quantitative Evaluation of Explainable AI Methods for Deepfake Detection},
+    year      = {2024},
+    publisher = {Association for Computing Machinery},
+    address   = {New York, NY, USA},
+    booktitle = {Proceedings of the 3rd ACM International Workshop on Multimedia AI against Disinformation},
+    location  = {Thailand},
+    series    = {MAD '24}
 }
 ```
 
 ## License
 <div align="justify">
-
-Copyright (c) 2022, Evlampios Apostolidis, Georgios Balaouras, Vasileios Mezaris, Ioannis Patras / CERTH-ITI. All rights reserved. This code is provided for academic, non-commercial use only. Redistribution and use in source and binary forms, with or without modification, are permitted for academic non-commercial use provided that the following conditions are met:
+    
+Copyright (c) 2024, Konstantinos Tsigos, Evlampios Apostolidis, Spyridon Baxevanakis, Symeon Papadopoulos, Vasileios Mezaris / CERTH-ITI. All rights reserved. This code is provided for academic, non-commercial use only. Redistribution and use in source and binary forms, with or without modification, are permitted for academic non-commercial use provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation provided with the distribution.
 
 This software is provided by the authors "as is" and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall the authors be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.
 </div>
--->
+
 ## Acknowledgement
-<div align="justify"> This work was supported by the EU Horizon 2020 programme under grant agreements H2020-832921 MIRROR and H2020-951911 AI4Media. </div>
+<div align="justify"> This work was supported by the EU Horizon Europe and Horizon 2020 programmes under grant agreements 101070190 AI4TRUST and 951911 AI4Media, respectively. </div>
