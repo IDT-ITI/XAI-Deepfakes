@@ -29,7 +29,7 @@ where `RAW_DATA_PATH` is the path to the downloaded FF++ dataset and `PREPROCESS
 
 3. Create a new LMDB database by running the following script:
 ```bash
-python3 data/lmdb_storage.py add-csv -csv ./data/faceforensics_frames.csv -h -pc relative_path -d ./data/xai_test_data.lmdb -ms 21474836480 -v -b PREPROCESSED_DATA_PATH
+python3 data/lmdb_storage.py add-csv -csv 'faceforensics_frames.csv' -h -pc relative_path -d './data/xai_test_data.lmdb' -ms 21474836480 -v -b 'PREPROCESSED_DATA_PATH'
 ```
 where `faceforensics_frames.csv` is the file created in the previous step and `PREPROCESSED_DATA_PATH` is the path to the preprocessed data. The script will create a new LMDB database `xai_test_data.lmdb` containing the preprocessed frames. The `-ms` flag specifies the maximum size of the database in bytes, default is 20GB.
 
