@@ -16,11 +16,49 @@ Dependencies can be found inside the [environment.yml](/environment.yml) file, w
 ## Data
 <div align="justify">
 
-The data for visualizing and evaluating the different explanation methods, consist of the manipulated and non-manipulated sampled frames of the test videos found in the test split of the [FaceForensics++](https://github.com/ondyari/FaceForensics) dataset.
+The data for evaluating as well as visualizing the different explanation methods, consist of the manipulated and non-manipulated cropped sampled frames of the test videos found in the test split of the [FaceForensics++](https://github.com/ondyari/FaceForensics) dataset.
 
-To prevent misuse, the data are **not** publicly available. You can request for permission to access the database containing the sampled and cropped test frames through the link: https://updatelink . The database needs to be placed into the [data](/data) folder for the code to work.
+The required database can be created following the steps below:
+
+1. Download the [FaceForensics++](https://github.com/ondyari/FaceForensics/blob/master/dataset/README.md) dataset
+2. Run the following script to preprocess the data:
+```bash
+python3 data/preprocess_ff.py prepro -r RAW_DATA_PATH -tr PREPROCESSED_DATA_PATH -d cuda:0 -mdcsv RAW_DATA_PATH/dataset_info.csv -mdcsv faceforensics_frames.csv
+```
+Where `RAW_DATA_PATH` is the path to the downloaded FF++ dataset and `PREPROCESSED_DATA_PATH` is the path to save the preprocessed data. The script will create a new file `faceforensics_frames.csv` containing the paths to the preprocessed frames.
+
+3. Create a new LMDB database by running the following script:
+```bash
+python3 data/lmdb_storage.py add-csv -csv ./faceforensics_frames.csv -h -pc relative_path -d ./ff.lmdb -ms 21474836480 -v -b PREPROCESSED_DATA_PATH
+```
+Where `faceforensics_frames.csv` is the file created in the previous step and `PREPROCESSED_DATA_PATH` is the path to the preprocessed data. The script will create a new LMDB database `ff.lmdb` containing the preprocessed frames. The `-ms` flag specifies the maximum size of the database in bytes, default is 20GB.
 
 </div>
+
+## Trained model
+<div align="justify">
+
+### About the model
+| Model | ff_attribution
+| --- | --- |
+| Task | multiclass |
+| Arch. | efficientnetv2_b0 |
+| Type | CNN |
+| No. Params | 7.1M |
+| No. Datasets | 1 |
+| Input | (B, 3, 224, 224) |
+| Output | (B, 5) |
+
+### ff_attribution
+Trained for multiclass classification on the FaceForensics++. Outputs a probability for each of the 5 classes, (0, 1, 2, 3, 4) corresponding to (real, neural textures, face2face, deepfakes, faceswap). The dataset includes both faceswap (deepfakes, faceswap) and face reenactment (neural textures, face2face) data.
+
+#### Performance (FF++ test set)
+| Metric | Value |
+| --- | --- |
+| MulticlassAccuracy | 0.9626 |
+| MulticlassAUROC | 0.9970 |
+| MulticlassF1Score | 0.9627 |
+| MulticlassAveragePrecision | 0.9881 |
 
 ## Configurations and results
 <div align="justify">
@@ -80,13 +118,6 @@ where, `$exp_num` is the number of the current evaluated experiment, `$dataset` 
 For further details about the adopted structure of directories in our implementation, please check line [#7](evaluation/evaluate_factor.sh#L7) and line [#13](evaluation/evaluate_factor.sh#L13) of [`evaluate_factor.sh`](evaluation/evaluate_factor.sh). </div>
 
 -->
-
-## Trained model
-<div align="justify">
-
-We have released the [**`trained model`**]() used in our evaluation procedure.
-The model needs to be placed inside the [`checkpoint`](model/checkpoint) folder for the code to work.
-</div>
 
 ## Citation
 <div align="justify">
