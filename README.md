@@ -106,7 +106,7 @@ BibTeX:
     publisher = {Association for Computing Machinery},
     address   = {New York, NY, USA},
     booktitle = {Proceedings of the 3rd ACM International Workshop on Multimedia AI against Disinformation},
-    location  = {Thailand},
+    location  = {Phuket, Thailand},
     series    = {MAD '24}
 }
 ```
