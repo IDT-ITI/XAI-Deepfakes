@@ -3,9 +3,9 @@
 ## [[Paper](https://updatelink)] [[DOI](https://updatelink)] [[Cite](https://updatelink)]
 <div align="justify">
 
-- From **"Towards Quantitative Evaluation of Explainable AI Methods for Deepfake Detection"**.
-- Written by Konstantinos Tsigos, Evlampios Apostolidis and Vasileios Mezaris.
-- This software can be used to visualize and evaluate different explanations of popular explanation methods from the literature, onto a state-of-the-art deepfake detector that relies on the second version of the Efficient-Net architecture. In this study, a slightly alterted version of an already existing pipeline is proposed, to evaluate the employed explanation methods (GradCAM++, RISE, SHAP, LIME, SOBOL), through the effectivenss of an adversarial attack to succesfully change the label of a deepfake image from fake to real, by adding noise to its segments that where returned as explanation.
+- From **"Towards Quantitative Evaluation of Explainable AI Methods for Deepfake Detection"**, Proc. ACM Int. Workshop on Multimedia AI against Disinformation (MAD’24) at the ACM Int. Conf. on Multimedia Retrieval (ICMR’24), Thailand, June 2024.
+- Written by Konstantinos Tsigos, Evlampios Apostolidis, Spyridon Baxevanakis, Symeon Papadopoulos and Vasileios Mezaris.
+- This software can be used to evaluate the performance of five explanation approaches from the literature (GradCAM++, RISE, SHAP, LIME, SOBOL) on explaining the output of a state-of-the-art model (based on Efficient-Net) for deepfake detection. Our evaluation framework assesses the ability of an explanation method to spot the regions of a fake image with the biggest influence on the decision of the deepfake detector, by examining the extent to which these regions can be modified through a set of adversarial attacks, in order to flip the detector's prediction or reduce its initial prediction.
 </div>
 
 ## Dependencies
