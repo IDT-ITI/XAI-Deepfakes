@@ -1,11 +1,11 @@
 # Towards Quantitative Evaluation of Explainable AI Methods for Deepfake Detection
 
-## [[Paper](https://updatelink)] [[DOI](https://updatelink)] [[Cite](https://updatelink)]
+## [[Paper](https://arxiv.org/pdf/2404.18649)] [[DOI](https://updatelink)] [[Cite](#citation)]
 <div align="justify">
 
 - From **"Towards Quantitative Evaluation of Explainable AI Methods for Deepfake Detection"**, Proc. ACM Int. Workshop on Multimedia AI against Disinformation (MAD’24) at the ACM Int. Conf. on Multimedia Retrieval (ICMR’24), Thailand, June 2024.
 - Written by Konstantinos Tsigos, Evlampios Apostolidis, Spyridon Baxevanakis, Symeon Papadopoulos and Vasileios Mezaris.
-- This software can be used to evaluate the performance of five explanation approaches from the literature (GradCAM++, RISE, SHAP, LIME, SOBOL) on explaining the output of a state-of-the-art model (based on Efficient-Net) for deepfake detection. Our evaluation framework assesses the ability of an explanation method to spot the regions of a fake image with the biggest influence on the decision of the deepfake detector, by examining the extent to which these regions can be modified through a set of adversarial attacks, in order to flip the detector's prediction or reduce its initial prediction.
+- This software can be used to evaluate the performance of five explanation approaches from the literature (GradCAM++, RISE, SHAP, LIME, SOBOL), on explaining the output of a state-of-the-art model (based on Efficient-Net) for deepfake detection. Our evaluation framework assesses the ability of an explanation method to spot the regions of a fake image with the biggest influence on the decision of the deepfake detector, by examining the extent to which these regions can be modified through a set of adversarial attacks, in order to flip the detector's prediction or reduce its initial prediction.
 </div>
 
 ## Dependencies
@@ -16,29 +16,34 @@ Dependencies can be found inside the [environment.yml](/environment.yml) file, w
 ## Data
 <div align="justify">
 
-The data for evaluating as well as visualizing the different explanation methods, consist of the manipulated and non-manipulated cropped sampled frames of the test videos found in the test split of the [FaceForensics++](https://github.com/ondyari/FaceForensics) dataset.
+The data for evaluating the different explanation methods, as well as visualizing their results, consist of the manipulated and non-manipulated cropped and sampled frames of the test videos found in the test split of the [FaceForensics++](https://github.com/ondyari/FaceForensics) dataset.
 
-The required database can be created following the steps below:
+The required database containing the afformentioned data can be created by following the steps below:
 
-1. Download the [FaceForensics++](https://github.com/ondyari/FaceForensics/blob/master/dataset/README.md) dataset
-2. Run the following script to preprocess the data:
+1. Download the [FaceForensics++](https://github.com/ondyari/FaceForensics#Access) dataset
+2. Run the following script to preprocess the raw data:
 ```bash
-python3 data/preprocess_ff.py prepro -r RAW_DATA_PATH -tr PREPROCESSED_DATA_PATH -d cuda:0 -mdcsv RAW_DATA_PATH/dataset_info.csv -mdcsv faceforensics_frames.csv
+python3 data/preprocess_ff.py prepro -r RAW_DATA_PATH -tr PREPROCESSED_DATA_PATH -d cuda:0 -mdcsv RAW_DATA_PATH/dataset_info.csv -mdcsv data/faceforensics_frames.csv
 ```
-Where `RAW_DATA_PATH` is the path to the downloaded FF++ dataset and `PREPROCESSED_DATA_PATH` is the path to save the preprocessed data. The script will create a new file `faceforensics_frames.csv` containing the paths to the preprocessed frames.
+where `RAW_DATA_PATH` is the path to the downloaded FF++ dataset and `PREPROCESSED_DATA_PATH` is the path to save the preprocessed data. The script will create a new file `faceforensics_frames.csv` containing the paths to the preprocessed frames.
 
 3. Create a new LMDB database by running the following script:
 ```bash
-python3 data/lmdb_storage.py add-csv -csv ./faceforensics_frames.csv -h -pc relative_path -d ./ff.lmdb -ms 21474836480 -v -b PREPROCESSED_DATA_PATH
+python3 data/lmdb_storage.py add-csv -csv ./data/faceforensics_frames.csv -h -pc relative_path -d ./data/xai_test_data.lmdb -ms 21474836480 -v -b PREPROCESSED_DATA_PATH
 ```
-Where `faceforensics_frames.csv` is the file created in the previous step and `PREPROCESSED_DATA_PATH` is the path to the preprocessed data. The script will create a new LMDB database `ff.lmdb` containing the preprocessed frames. The `-ms` flag specifies the maximum size of the database in bytes, default is 20GB.
+where `faceforensics_frames.csv` is the file created in the previous step and `PREPROCESSED_DATA_PATH` is the path to the preprocessed data. The script will create a new LMDB database `xai_test_data.lmdb` containing the preprocessed frames. The `-ms` flag specifies the maximum size of the database in bytes, default is 20GB.
+
+<!-- The LMDB database can then be placed inside the [data](/data) folder for the code to work properly. -->
 
 </div>
 
 ## Trained model
 <div align="justify">
 
-### About the model
+### ff_attribution
+The trained model employed, was trained for multiclass classification on the FaceForensics++ dataset. It outputs a probability for each of the 5 classes (0, 1, 2, 3, 4), corresponding to real, neural textures, face2face, deepfakes and faceswap.
+
+#### Model characteristics
 | Model | ff_attribution
 | --- | --- |
 | Task | multiclass |
@@ -49,9 +54,6 @@ Where `faceforensics_frames.csv` is the file created in the previous step and `P
 | Input | (B, 3, 224, 224) |
 | Output | (B, 5) |
 
-### ff_attribution
-Trained for multiclass classification on the FaceForensics++. Outputs a probability for each of the 5 classes, (0, 1, 2, 3, 4) corresponding to (real, neural textures, face2face, deepfakes, faceswap). The dataset includes both faceswap (deepfakes, faceswap) and face reenactment (neural textures, face2face) data.
-
 #### Performance (FF++ test set)
 | Metric | Value |
 | --- | --- |
@@ -60,19 +62,25 @@ Trained for multiclass classification on the FaceForensics++. Outputs a probabil
 | MulticlassF1Score | 0.9627 |
 | MulticlassAveragePrecision | 0.9881 |
 
-## Configurations and results
+## Evaluation and visualization
 <div align="justify">
-   
-Arguments: 
+
+To evaluate the explanation method(s) on our proposed approach, you run the [`evaluate.py`](explanation/evaluate.py) file.
+
+To evaluate the explanation method(s) on our proposed approach, as well as the original methodology for performance comparison, done on a smaller subset of 600 images, you run the [`evaluate_pipelines_comparison.py`](explanation/evaluate_pipelines_comparison.py) file.
+
+For visualizing the explanation mask returned by an explanation method for a specific image, you run the [`visualize.py`](explanation/visualize.py) file.
+
+## Running parameters and evaluation results
+<div align="justify">
+
 |Parameter name | File | Description | Default Value | Options
 | :--- | :--- | :--- | :---: | :---:
 `explanation_method`|[`visualize.py`](explanation/visualize.py#L19:L20)| Explanation method to explain the image. | 'LIME' | 'GradCAM++', 'RISE', 'SHAP', 'LIME', 'SOBOL'
-`dataset_example_index`|[`visualize.py`](explanation/visualize.py#L21:L22)| Index of the image in the database | "random" | "random", integer between [0,13837]
-`evaluation_explanation_methods`|[`evaluate.py`](explanation/evaluate.py#L18:L19)| Explanation method to evaluate | 'All' | 'All', 'GradCAM++', 'RISE', 'SHAP', 'LIME', 'SOBOL'
-`evaluation_explanation_methods`|[`evaluate_pipelines_comparison.py`](explanation/evaluate.py#L19:L20)| Explanation method to evaluate | 'All' | 'All', 'GradCAM++', 'RISE', 'SHAP', 'LIME', 'SOBOL'
+`dataset_example_index`|[`visualize.py`](explanation/visualize.py#L21:L22)| Index of the image in the database | 'random' | 'random', integer between [0,13837]
+`evaluation_explanation_methods`|[`evaluate.py`](explanation/evaluate.py#L18:L19) [`evaluate_pipelines_comparison.py`](explanation/evaluate_pipelines_comparison.py#L19:L20)| Explanation method to evaluate | 'All' | 'All', 'GradCAM++', 'RISE', 'SHAP', 'LIME', 'SOBOL'
 
-
-Evaluation results are printed onto the console and additionally saved into a csv format file, located at the results folder created at the [explanation](/explanation) path. In order to prevent the need to run the evaluation process from the beginning in case of a crash, the evaluation results of each subsequent image are contained into an npy format file used as a checkpoint, also located at the results folder.
+Evaluation results are printed onto the console and additionally saved into a csv format file, located at the `results` folder created at the [explanation](/explanation) path. In order to prevent the need of running the evaluation process from the beginning in case of a crash, the evaluation results of each subsequent image are accumulated into an npy format file, used as a checkpoint, also located at the `results` folder.
 
 <!--
 ## Training
