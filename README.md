@@ -71,7 +71,7 @@ The default parameters and the available options for running the above scripts, 
 
 |Parameter name | File | Description | Default Value | Options
 | :--- | :--- | :--- | :---: | :---:
-`evaluation_explanation_methods`|[`evaluate.py`](explanation/evaluate.py#L18:L19) [`evaluate_pipelines_comparison.py`](explanation/evaluate_pipelines_comparison.py#L19:L20)| Explanation method to evaluate | 'All' | 'All', 'GradCAM++', 'RISE', 'SHAP', 'LIME', 'SOBOL'
+`evaluation_explanation_methods`|[`evaluate.py`](explanation/evaluate.py#L18:L19) [`evaluate_pipelines_comparison.py`](explanation/evaluate_pipelines_comparison.py#L19:L20)| Explanation method(s) to evaluate | 'All' | 'All', 'GradCAM++', 'RISE', 'SHAP', 'LIME', 'SOBOL'
 `explanation_method`|[`visualize.py`](explanation/visualize.py#L19:L20)| Explanation method to explain the image. | 'LIME' | 'GradCAM++', 'RISE', 'SHAP', 'LIME', 'SOBOL'
 `dataset_example_index`|[`visualize.py`](explanation/visualize.py#L21:L22)| Index of the image in the database | 'random' | 'random', integer between [0,13837]
 
