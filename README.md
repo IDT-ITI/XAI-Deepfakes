@@ -65,11 +65,11 @@ The trained model employed, was trained for multiclass classification on the Fac
 ## Evaluation and visualization
 <div align="justify">
 
-To evaluate the explanation method(s) on our proposed approach, you run the [`evaluate.py`](explanation/evaluate.py) file.
+To evaluate the explanation method(s) on our proposed approach, run the [`evaluate.py`](explanation/evaluate.py) file.
 
-To evaluate the explanation method(s) on our proposed approach, as well as the original methodology for performance comparison, done on a smaller subset of 600 images, you run the [`evaluate_pipelines_comparison.py`](explanation/evaluate_pipelines_comparison.py) file.
+To evaluate the explanation method(s) on our proposed approach, as well as the original suggested pipeline for performance comparison, done on a smaller subset of 600 images, run the [`evaluate_pipelines_comparison.py`](explanation/evaluate_pipelines_comparison.py) file.
 
-For visualizing the explanation mask returned by an explanation method for a specific image, you run the [`visualize.py`](explanation/visualize.py) file.
+For visualizing the explanation mask returned by an explanation method for a specific image of the dataset, run the [`visualize.py`](explanation/visualize.py) file.
 
 ## Running parameters and evaluation results
 <div align="justify">
