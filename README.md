@@ -9,9 +9,7 @@
 </div>
 
 ## Dependencies
-Developed, checked and verified on an `Ubuntu 20.04.6` PC with an `NVIDIA RTX 4090` GPU and an `i5-12600K` CPU.
-
-Dependencies can be found inside the [environment.yml](/environment.yml) file, which can be used to set up a corresponding [conda](https://docs.conda.io/en/latest/) enviroment.
+The code was developed, checked and verified on an `Ubuntu 20.04.6` PC with an `NVIDIA RTX 4090` GPU and an `i5-12600K` CPU. All dependencies can be found inside the [environment.yml](/environment.yml) file, which can be used to set up the necessary [conda](https://docs.conda.io/en/latest/) enviroment.
 
 ## Data
 <div align="justify">
