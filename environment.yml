@@ -1,4 +1,4 @@
-ame: dfxai
+name: dfxai
 channels:
   - pytorch
   - nvidia
@@ -235,8 +235,10 @@ dependencies:
   - zlib=1.2.13=h5eee18b_0
   - zstd=1.5.5=hc292b87_0
   - pip:
+      - batch-face==1.4.0
       - contourpy==1.2.0
       - cycler==0.12.1
+      - decord==0.6.0
       - fonttools==4.47.2
       - grad-cam==1.5.0
       - huggingface-hub==0.20.3
@@ -246,6 +248,7 @@ dependencies:
       - llvmlite==0.42.0
       - lmdb==1.4.1
       - matplotlib==3.8.2
+      - more-itertools==10.2.0
       - numba==0.59.0
       - opencv-python==4.9.0.80
       - pandas==2.2.0
