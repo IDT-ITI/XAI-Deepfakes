@@ -1,6 +1,6 @@
 # Towards Quantitative Evaluation of Explainable AI Methods for Deepfake Detection
 
-## PyTorch Implementation [[Paper](https://arxiv.org/pdf/2404.18649)] [[DOI](https://updatelink)] [[Cite](#citation)]
+## PyTorch Implementation [[Paper](https://arxiv.org/pdf/2404.18649)] [[DOI](https://doi.org/10.1145/3643491.3660292)] [[Cite](#citation)]
 <div align="justify">
 
 - From **"Towards Quantitative Evaluation of Explainable AI Methods for Deepfake Detection"**, Proc. ACM Int. Workshop on Multimedia AI against Disinformation (MAD’24) at the ACM Int. Conf. on Multimedia Retrieval (ICMR’24), Thailand, June 2024.
@@ -67,59 +67,15 @@ To visualize the created explanation by an explanation method, for a specific im
 
 ## Running parameters and evaluation results
 <div align="justify">
+The default parameters and the available options for running the above scripts, are listed below: 
 
 |Parameter name | File | Description | Default Value | Options
 | :--- | :--- | :--- | :---: | :---:
+`evaluation_explanation_methods`|[`evaluate.py`](explanation/evaluate.py#L18:L19) [`evaluate_pipelines_comparison.py`](explanation/evaluate_pipelines_comparison.py#L19:L20)| Explanation method to evaluate | 'All' | 'All', 'GradCAM++', 'RISE', 'SHAP', 'LIME', 'SOBOL'
 `explanation_method`|[`visualize.py`](explanation/visualize.py#L19:L20)| Explanation method to explain the image. | 'LIME' | 'GradCAM++', 'RISE', 'SHAP', 'LIME', 'SOBOL'
 `dataset_example_index`|[`visualize.py`](explanation/visualize.py#L21:L22)| Index of the image in the database | 'random' | 'random', integer between [0,13837]
-`evaluation_explanation_methods`|[`evaluate.py`](explanation/evaluate.py#L18:L19) [`evaluate_pipelines_comparison.py`](explanation/evaluate_pipelines_comparison.py#L19:L20)| Explanation method to evaluate | 'All' | 'All', 'GradCAM++', 'RISE', 'SHAP', 'LIME', 'SOBOL'
 
-Evaluation results are printed onto the console and additionally saved into a csv format file, located at the `results` folder created at the [explanation](/explanation) path. In order to prevent the need of running the evaluation process from the beginning in case of a crash, the evaluation results of each subsequent image are accumulated into an npy format file, used as a checkpoint, also located at the `results` folder.
-
-<!--
-## Training
-<div align="justify">
-
-To train the model using one of the aforementioned datasets and for a number of randomly created splits of the dataset (where in each split 80% of the data is used for training and 20% for testing) use the corresponding JSON file that is included in the [data/splits](/data/splits) directory. This file contains the 5 randomly-generated splits that were utilized in our experiments.
-
-For training the model using a single split, run:
-```bash
-for sigma in $(seq 0.5 0.1 0.9); do
-    python model/main.py --split_index N --n_epochs E --batch_size B --video_type 'dataset_name' --reg_factor '$sigma'
-done
-```
-where, `N` refers to the index of the used data split, `E` refers to the number of training epochs, `B` refers to the batch size, `dataset_name` refers to the name of the used dataset, and `$sigma` refers to the length regularization factor, a hyper-parameter of our method that relates to the length of the generated summary.
-
-Alternatively, to train the model for all 5 splits, use the [`run_summe_splits.sh`](model/run_summe_splits.sh) and/or [`run_tvsum_splits.sh`](model/run_tvsum_splits.sh) script and do the following:
-```shell-script
-chmod +x model/run_summe_splits.sh    # Makes the script executable.
-chmod +x model/run_tvsum_splits.sh    # Makes the script executable.
-./model/run_summe_splits.sh           # Runs the script. 
-./model/run_tvsum_splits.sh           # Runs the script.  
-```
-Please note that after each training epoch the algorithm performs an evaluation step, using the trained model to compute the importance scores for the frames of each video of the test set. These scores are then used by the provided [evaluation](evaluation) scripts to assess the overall performance of the model.
-
-The progress of the training can be monitored via the TensorBoard platform and by:
-- opening a command line (cmd) and running: `tensorboard --logdir=/path/to/log-directory --host=localhost`
-- opening a browser and pasting the returned URL from cmd. </div>
-
-## Model Selection and Evaluation 
-<div align="justify">
-
-The selection of a well-trained model is based on a two-step process. First, we keep one trained model per considered value for the length regularization factor sigma, by selecting the model (i.e., the epoch) that minimizes the training loss. Then, we choose the best-performing model (i.e., the sigma value) for a given data split through a mechanism that involves a fully-untrained model of the architecture and is based on transductive inference. More details about this assessment can be found in Section 4.2 of our work. To evaluate the trained models of the architecture and automatically select a well-trained one, define:
- - the [`dataset_path`](evaluation/compute_fscores.py#L25) in [`compute_fscores.py`](evaluation/compute_fscores.py),
- - the [`base_path`](evaluation/evaluate_factor.sh#L7) in [`evaluate_factor`](evaluation/evaluate_factor.sh),
- - the [`base_path`](evaluation/choose_best_model.py#L12) and [`annot_path`](evaluation/choose_best_model.py#L34) in [`choose_best_model`](evaluation/choose_best_model.py),
-
-and run [`evaluate_exp.sh`](evaluation/evaluate_exp.sh) via
-```bash
-sh evaluation/evaluate_exp.sh '$exp_num' '$dataset' '$eval_method'
-```
-where, `$exp_num` is the number of the current evaluated experiment, `$dataset` refers to the dataset being used, and `$eval_method` describe the used approach for computing the overall F-Score after comparing the generated summary with all the available user summaries (i.e., 'max' for SumMe and 'avg' for TVSum).
-
-For further details about the adopted structure of directories in our implementation, please check line [#7](evaluation/evaluate_factor.sh#L7) and line [#13](evaluation/evaluate_factor.sh#L13) of [`evaluate_factor.sh`](evaluation/evaluate_factor.sh). </div>
-
--->
+The evaluation results are printed onto the console and saved into a CSV file which is stored within the `results` folder, created at the [explanation](/explanation) path. To eliminate the need to run the evaluation process from the beginning in case of an unexpected error, the evaluation results for each test image are accumulated into an NPY file, that is used as a checkpoint and is also located at the `results` folder.
 
 ## Citation
 <div align="justify">
