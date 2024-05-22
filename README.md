@@ -61,7 +61,7 @@ The employed model (called ff_attribution) was trained for multiclass classifica
 
 To evaluate the explanation method(s) using our framework, run the [`evaluate.py`](explanation/evaluate.py) script.
 
-To evaluate the explanation method(s) using both our framework and the one from [Gowrisankar et al. (2024)](https://arxiv.org/abs/2312.06627) (which was used as the basis for developing our framework), and compare the results (as we did in Tables 3 and 4 of our paper), run the [`evaluate_pipelines_comparison.py`] (explanation/evaluate_pipelines_comparison.py) script.
+To evaluate the explanation method(s) using both our framework and the one from [Gowrisankar et al. (2024)](https://arxiv.org/abs/2312.06627) (which was used as the basis for developing our framework), and compare the results (as we did in Tables 3 and 4 of our paper), run the [`evaluate_pipelines_comparison.py`](explanation/evaluate_pipelines_comparison.py) script.
 
 To visualize the created explanation by an explanation method, for a specific image of the dataset, run the [`visualize.py`](explanation/visualize.py) script.
 
