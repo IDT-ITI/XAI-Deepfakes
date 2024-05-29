@@ -85,6 +85,8 @@ If you find our work, code or pretrained models, useful in your work, please cit
 K. Tsigos, E. Apostolidis, S. Baxevanakis, S. Papadopoulos, V. Mezaris, "<b>Towards Quantitative Evaluation of Explainable AI Methods for Deepfake Detection</b>", Proc. ACM Int. Workshop on Multimedia AI against Disinformation (MAD’24) at the ACM Int. Conf. on Multimedia Retrieval (ICMR’24), Thailand, June 2024.
 </div>
 
+The accepted version of this paper is available on ArXiv at: https://arxiv.org/abs/2404.18649
+
 BibTeX:
 
 ```
