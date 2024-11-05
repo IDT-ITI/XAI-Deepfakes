@@ -23,7 +23,7 @@ To re-create the database file that we used in our experiments, please follow th
 ```bash
 python data/preprocess_ff.py prepro -r RAW_DATA_PATH -tr PREPROCESSED_DATA_PATH -d cuda:0 -mdcsv RAW_DATA_PATH/dataset_info.csv -orig
 ```
-where `RAW_DATA_PATH` is the path to the downloaded FF++ dataset and `PREPROCESSED_DATA_PATH` is the path to save the preprocessed data. The script will create a new file `faceforensics_frames.csv` containing the paths to the preprocessed frames.
+where `RAW_DATA_PATH` is the path to the downloaded FF++ dataset, `PREPROCESSED_DATA_PATH` is the path to save the preprocessed data, and `dataset_info.csv` is available in the [data/csvs](https://github.com/IDT-ITI/XAI-Deepfakes/tree/main/data/csvs) directory. The script will create a new file `faceforensics_frames.csv` containing the paths to the preprocessed frames.
 
 3. Create a new LMDB database by running the following script:
 ```bash
